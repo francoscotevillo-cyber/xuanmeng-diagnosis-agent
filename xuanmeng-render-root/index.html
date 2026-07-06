@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>宣盟获客诊断 Agent</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="./assets/xuanmeng-mark.svg" alt="" />
+          <div>
+            <strong>宣盟获客诊断 Agent</strong>
+            <span>外贸独立站获客方案生成器</span>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <button type="button" class="nav-item active" data-panel="inputPanel">
+            <i data-lucide="clipboard-pen-line"></i>
+            <span>客户录入</span>
+          </button>
+          <button type="button" class="nav-item" data-panel="diagnosisPanel">
+            <i data-lucide="scan-search"></i>
+            <span>诊断结果</span>
+          </button>
+          <button type="button" class="nav-item" data-panel="reportPanel">
+            <i data-lucide="file-check-2"></i>
+            <span>交付报告</span>
+          </button>
+          <button type="button" class="nav-item" data-panel="libraryPanel">
+            <i data-lucide="archive"></i>
+            <span>客户档案</span>
+          </button>
+        </nav>
+
+        <div class="agent-card">
+          <span class="card-label">Agent 当前状态</span>
+          <strong id="agentState">等待客户资料</strong>
+          <p id="agentStateText">录入客户行业、渠道、官网基础和询盘数据后，可生成完整获客诊断方案。</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">XUANMENG GROWTH INTELLIGENCE</p>
+            <h1>外贸独立站获客诊断工作台</h1>
+          </div>
+          <div class="top-actions">
+            <button type="button" class="tool-button" id="sampleBtn" title="填入示例客户">
+              <i data-lucide="wand-sparkles"></i>
+              <span>示例</span>
+            </button>
+            <button type="button" class="tool-button" id="saveBtn" title="保存客户档案">
+              <i data-lucide="save"></i>
+              <span>保存</span>
+            </button>
+            <button type="button" class="primary-button" id="runBtn">
+              <i data-lucide="sparkles"></i>
+              <span>生成诊断</span>
+            </button>
+          </div>
+        </header>
+
+        <section class="status-grid">
+          <article>
+            <span>客户成熟度</span>
+            <strong id="maturityText">待诊断</strong>
+          </article>
+          <article>
+            <span>预估获客瓶颈</span>
+            <strong id="bottleneckText">资料未录入</strong>
+          </article>
+          <article>
+            <span>建议切入方案</span>
+            <strong id="solutionText">先做获客诊断</strong>
+          </article>
+        </section>
+
+        <section class="panel input-panel active" id="inputPanel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">STEP 01</p>
+              <h2>客户基础资料</h2>
+            </div>
+            <button type="button" class="ghost-button" id="clearBtn">
+              <i data-lucide="rotate-ccw"></i>
+              <span>清空</span>
+            </button>
+          </div>
+
+          <form class="diagnosis-form" id="diagnosisForm">
+            <section class="smart-capture">
+              <div class="capture-copy">
+                <p class="eyebrow">SMART INTAKE</p>
+                <h3>粘贴官网或产品链接，Agent 先自动识别</h3>
+                <p>本地静态版会优先从域名、链接路径和你粘贴的官网文字里推断客户信息；正式上线后可接服务端抓取官网、SEO 数据和页面内容。</p>
+              </div>
+              <div class="capture-form">
+                <label>
+                  <span>官网 / 产品页 / 关于我们链接</span>
+                  <textarea name="sourceLinks" rows="3" placeholder="每行一个链接，例如：https://www.example.com&#10;https://www.example.com/products/stainless-steel-sink"></textarea>
+                </label>
+                <div class="capture-row">
+                  <label>
+                    <span>目标市场（可选）</span>
+                    <input name="quickMarkets" placeholder="例如：美国、德国、澳大利亚" />
+                  </label>
+                  <label>
+                    <span>已知产品词（可选）</span>
+                    <input name="quickProduct" placeholder="例如：stainless steel sink" />
+                  </label>
+                </div>
+                <label>
+                  <span>官网文字/页面简介（可选，复制一段即可）</span>
+                  <textarea name="siteText" rows="4" placeholder="可以粘贴官网首页、产品页、About us 的文字。填了以后识别会更准。"></textarea>
+                </label>
+                <div class="capture-actions">
+                  <button type="button" class="primary-button" id="smartAnalyzeBtn">
+                    <i data-lucide="scan-search"></i>
+                    <span>智能识别并填入</span>
+                  </button>
+                  <button type="button" class="ghost-button" id="toggleAdvancedBtn">
+                    <i data-lucide="sliders-horizontal"></i>
+                    <span>展开高级补充</span>
+                  </button>
+                </div>
+              </div>
+              <div class="capture-result" id="captureResult">
+                <span>等待识别</span>
+                <strong>粘贴链接后点击“智能识别并填入”</strong>
+              </div>
+            </section>
+
+            <details class="advanced-fields" id="advancedFields">
+              <summary>高级补充资料</summary>
+              <div class="form-grid">
+                <label>
+                  <span>客户公司</span>
+                  <input name="company" placeholder="例如：宁波某五金制品有限公司" />
+                </label>
+                <label>
+                  <span>官网地址</span>
+                  <input name="website" placeholder="https://www.example.com" />
+                </label>
+                <label>
+                  <span>主营产品</span>
+                  <input name="product" placeholder="例如：不锈钢水槽 / 宠物用品 / LED 灯具" />
+                </label>
+                <label>
+                  <span>目标市场</span>
+                  <input name="markets" placeholder="例如：美国、德国、澳大利亚" />
+                </label>
+                <label>
+                  <span>企业类型</span>
+                  <select name="companyType">
+                    <option value="factory">工厂型企业</option>
+                    <option value="trader">贸易商</option>
+                    <option value="brand">品牌出海</option>
+                    <option value="domestic">内贸转外贸</option>
+                  </select>
+                </label>
+                <label>
+                  <span>客单价区间</span>
+                  <select name="dealSize">
+                    <option value="small">低客单：小批量/样品为主</option>
+                    <option value="mid" selected>中客单：常规 B2B 采购</option>
+                    <option value="large">高客单：项目制/设备/定制</option>
+                  </select>
+                </label>
+              </div>
+            </details>
+
+            <div class="form-split">
+              <section class="input-box">
+                <div class="box-title">
+                  <i data-lucide="route"></i>
+                  <h3>当前获客渠道</h3>
+                </div>
+                <div class="check-grid">
+                  <label><input type="checkbox" name="channels" value="alibaba" checked /> 阿里国际站</label>
+                  <label><input type="checkbox" name="channels" value="madeinchina" /> 中国制造</label>
+                  <label><input type="checkbox" name="channels" value="exhibition" checked /> 海外/国内展会</label>
+                  <label><input type="checkbox" name="channels" value="googleads" /> Google 广告</label>
+                  <label><input type="checkbox" name="channels" value="seo" /> Google SEO</label>
+                  <label><input type="checkbox" name="channels" value="social" /> LinkedIn/Facebook</label>
+                  <label><input type="checkbox" name="channels" value="referral" /> 老客户转介绍</label>
+                  <label><input type="checkbox" name="channels" value="offline" /> 海外地推/分公司</label>
+                </div>
+              </section>
+
+              <section class="input-box">
+                <div class="box-title">
+                  <i data-lucide="activity"></i>
+                  <h3>关键经营数据</h3>
+                </div>
+                <div class="mini-grid">
+                  <label>
+                    <span>月获客投入（元）</span>
+                    <input name="monthlySpend" type="number" min="0" value="80000" />
+                  </label>
+                  <label>
+                    <span>月有效询盘数</span>
+                    <input name="monthlyLeads" type="number" min="0" value="35" />
+                  </label>
+                  <label>
+                    <span>询盘成交率（%）</span>
+                    <input name="conversionRate" type="number" min="0" max="100" value="5" />
+                  </label>
+                  <label>
+                    <span>平台依赖度（%）</span>
+                    <input name="platformDependence" type="number" min="0" max="100" value="75" />
+                  </label>
+                </div>
+              </section>
+            </div>
+
+            <section class="input-box">
+              <div class="box-title">
+                <i data-lucide="sliders-horizontal"></i>
+                <h3>独立站与转化基础</h3>
+              </div>
+              <div class="range-grid">
+                <label>
+                  <span>工厂/团队/资质信任素材</span>
+                  <input name="trustAssets" type="range" min="0" max="10" value="4" />
+                  <b data-output="trustAssets">4</b>
+                </label>
+                <label>
+                  <span>产品页完整度</span>
+                  <input name="productPages" type="range" min="0" max="10" value="5" />
+                  <b data-output="productPages">5</b>
+                </label>
+                <label>
+                  <span>英文内容与行业文章</span>
+                  <input name="contentDepth" type="range" min="0" max="10" value="2" />
+                  <b data-output="contentDepth">2</b>
+                </label>
+                <label>
+                  <span>SEO 技术基础</span>
+                  <input name="seoTech" type="range" min="0" max="10" value="3" />
+                  <b data-output="seoTech">3</b>
+                </label>
+                <label>
+                  <span>询盘表单与 CTA</span>
+                  <input name="ctaQuality" type="range" min="0" max="10" value="4" />
+                  <b data-output="ctaQuality">4</b>
+                </label>
+                <label>
+                  <span>AI 搜索/GEO 准备度</span>
+                  <input name="geoReadiness" type="range" min="0" max="10" value="1" />
+                  <b data-output="geoReadiness">1</b>
+                </label>
+              </div>
+            </section>
+
+            <section class="input-box">
+              <div class="box-title">
+                <i data-lucide="message-square-warning"></i>
+                <h3>客户口述痛点</h3>
+              </div>
+              <textarea name="pain" rows="5" placeholder="例如：平台投入越来越高，询盘质量下降；展会成本高，客户越来越年轻；官网有但没有自然流量，也不知道怎么做 AI 搜索推荐。"></textarea>
+            </section>
+          </form>
+        </section>
+
+        <section class="panel diagnosis-panel" id="diagnosisPanel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">STEP 02</p>
+              <h2>诊断结果</h2>
+            </div>
+            <span class="badge" id="diagnosisStamp">尚未生成</span>
+          </div>
+
+          <div class="score-layout">
+            <article class="score-card main-score">
+              <span>综合获客健康度</span>
+              <div class="score-ring" id="scoreRing"><strong>--</strong></div>
+              <p id="scoreSummary">填写客户信息后点击生成诊断。</p>
+            </article>
+            <div class="score-list" id="scoreList"></div>
+          </div>
+
+          <div class="module-grid">
+            <section class="module">
+              <div class="module-head">
+                <h3>核心问题优先级</h3>
+                <i data-lucide="list-checks"></i>
+              </div>
+              <div class="issue-list" id="issueList"></div>
+            </section>
+            <section class="module">
+              <div class="module-head">
+                <h3>渠道结构判断</h3>
+                <i data-lucide="network"></i>
+              </div>
+              <div class="channel-table" id="channelTable"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="panel report-panel" id="reportPanel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">STEP 03</p>
+              <h2>客户交付报告</h2>
+            </div>
+            <div class="report-actions">
+              <button type="button" class="ghost-button" id="copyReportBtn">
+                <i data-lucide="copy"></i>
+                <span>复制报告</span>
+              </button>
+              <button type="button" class="ghost-button" id="printBtn">
+                <i data-lucide="printer"></i>
+                <span>打印/导出 PDF</span>
+              </button>
+              <button type="button" class="ghost-button" id="jsonBtn">
+                <i data-lucide="download"></i>
+                <span>导出档案</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="report-tabs">
+            <button type="button" class="report-tab active" data-report="summaryReport">总览</button>
+            <button type="button" class="report-tab" data-report="seoReport">SEO/GEO</button>
+            <button type="button" class="report-tab" data-report="roadmapReport">90 天路线图</button>
+            <button type="button" class="report-tab" data-report="salesReport">销售跟进</button>
+          </div>
+
+          <div class="report-surface" id="printArea">
+            <div class="report-cover">
+              <div>
+                <p>宣盟获客诊断 Agent</p>
+                <h2 id="reportClientName">客户获客诊断方案</h2>
+              </div>
+              <span id="reportDate">--</span>
+            </div>
+            <section class="report-view active" id="summaryReport"></section>
+            <section class="report-view" id="seoReport"></section>
+            <section class="report-view" id="roadmapReport"></section>
+            <section class="report-view" id="salesReport"></section>
+          </div>
+        </section>
+
+        <section class="panel library-panel" id="libraryPanel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">CLIENT LIBRARY</p>
+              <h2>本地客户档案</h2>
+            </div>
+            <label class="ghost-button import-button">
+              <i data-lucide="upload"></i>
+              <span>导入档案</span>
+              <input id="importFile" type="file" accept=".json" />
+            </label>
+          </div>
+          <div class="archive-list" id="archiveList"></div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast">已完成</div>
+
+    <script src="./vendor/lucide.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
